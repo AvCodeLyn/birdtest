@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 100">
+  <!-- Generator: Adobe Illustrator 29.3.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 151)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke: #bb3f87;
+        stroke-miterlimit: 5.5;
+        stroke-width: .1px;
+      }
+
+      .st0, .st1 {
+        fill: #bb3f87;
+      }
+
+      .st2 {
+        fill: #43228a;
+      }
+
+      .st3 {
+        fill: #271839;
+      }
+    </style>
+  </defs>
+  <sodipodi:namedview id="namedview1" bordercolor="#111111" borderopacity="1" inkscape:current-layer="layer1" inkscape:cx="81.31728" inkscape:cy="33.410795" inkscape:deskcolor="#d1d1d1" inkscape:document-units="px" inkscape:pagecheckerboard="1" inkscape:pageopacity="0" inkscape:showpageshadow="0" inkscape:window-height="1009" inkscape:window-maximized="1" inkscape:window-width="1920" inkscape:window-x="1912" inkscape:window-y="-8" inkscape:zoom="2.8284271" pagecolor="#ffffff"/>
+  <g id="_x3C_defs">
+    <inkscape:path-effect id="path-effect8" effect="transform_2pts" elastic="false" end="65.218594,161.72908" first_knot="1" flip_horizontal="false" flip_vertical="false" from_original_width="false" helper_size="3" is_visible="true" last_knot="2" lock_angle="false" lock_length="false" lpeversion="1" offset="0" start="47.468594,161.72908" stretch="1"/>
+    <inkscape:path-effect id="path-effect8-7" effect="transform_2pts" elastic="false" end="65.218594,161.72908" first_knot="1" flip_horizontal="false" flip_vertical="false" from_original_width="false" helper_size="3" is_visible="true" last_knot="2" lock_angle="false" lock_length="false" lpeversion="1" offset="0" start="47.468594,161.72908" stretch="1"/>
+    <inkscape:path-effect id="path-effect8-3" effect="transform_2pts" elastic="false" end="65.218594,161.72908" first_knot="1" flip_horizontal="false" flip_vertical="false" from_original_width="false" helper_size="3" is_visible="true" last_knot="2" lock_angle="false" lock_length="false" lpeversion="1" offset="0" start="47.468594,161.72908" stretch="1"/>
+  </g>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Warstwa 1">
+    <path id="path15" class="st2" d="M156.4,40.1l6.8,25h8.4l4.1-16.2,3.9,16.2h8.5l6.8-25h-7.2l-3.5,17.8-4.3-17.8h-8.1l-4.2,17.9-3.5-17.9h-7.7Z"/>
+    <path id="path14" class="st2" d="M126.8,39.8c-1.6,0-3.1.4-4.5,1.2-1.3.8-2.5,1.9-3.4,3.2v-4.2h-7.7v25h7.7v-11.6c0-2.1.5-3.5,1.4-4.3,1-.8,2.4-1.3,4.3-1.3h2.1v-8.1h0Z"/>
+    <path id="path13" class="st3" d="M36.6,39.8c-1.6,0-3.1.3-4.4,1-1.3.6-2.4,1.5-3.1,2.6v-3.3h-7.7v25h7.7v-13.6c0-1.7.4-3,1.3-3.9s2-1.4,3.5-1.4,2.6.5,3.5,1.4,1.3,2.2,1.3,3.9v13.6h7.6v-14.6c0-3.3-.9-5.9-2.6-7.8-1.7-1.9-4.1-2.9-7-2.9h0Z"/>
+    <path id="path12" class="st2" d="M141.9,39.3c-2.4,0-4.7.5-6.6,1.6-2,1-3.5,2.6-4.7,4.5-1.1,1.9-1.7,4.2-1.7,6.8s.6,4.9,1.7,6.8c1.1,1.9,2.7,3.4,4.6,4.5,2,1,4.2,1.6,6.6,1.6s4.7-.5,6.6-1.6c2-1,3.6-2.5,4.7-4.5,1.2-2,1.7-4.2,1.7-6.8s-.6-4.8-1.7-6.8c-1.1-2-2.7-3.5-4.7-4.5s-4.2-1.6-6.6-1.6h0ZM141.9,46c1.5,0,2.7.5,3.7,1.6s1.5,2.6,1.5,4.6-.5,3.5-1.6,4.6c-1,1.1-2.3,1.6-3.7,1.6s-2.7-.5-3.7-1.6-1.4-2.6-1.4-4.6.5-3.6,1.5-4.6c1-1.1,2.2-1.6,3.7-1.6h0Z"/>
+    <path id="path11" class="st3" d="M8.1,33.6v31.5h7.7v-31.5s-7.7,0-7.7,0Z"/>
+    <path id="path9" class="st1" d="M61.7,32.1c-2.1,0-3.9.4-5.6,1.2-1.7.8-3,2.1-4.1,3.8-1,1.7-1.6,3.8-1.6,6.4h7.4c0-1.6.3-2.7.9-3.6.7-.9,1.6-1.3,2.7-1.3s2,.3,2.6,1,.9,1.6.9,2.9-.6,3.3-1.7,5-2.6,3.3-4.3,4.9c-1.7,1.6-4,3.5-6.9,6,0,0-.4.3-1.4,1.1v5.7h22.5v-6.2h-12.1c3.4-2.6,6.2-5.3,8.3-8,2.2-2.7,3.3-5.7,3.3-8.9s-.9-5.3-2.7-7.1c-1.8-1.8-4.5-2.7-8-2.7l-.2-.2Z"/>
+    <path id="path18" class="st2" d="M91.8,33.2c-3,0-5.7.7-8.2,2.1-2.4,1.4-4.4,3.3-5.9,5.7-1.4,2.4-2.2,5.2-2.2,8.3s.7,5.9,2.2,8.3c1.5,2.4,3.4,4.4,5.9,5.7,1.5.8,3,1.4,4.7,1.7v-7.3c-1-.4-1.9-1-2.6-1.8-1.5-1.7-2.2-3.9-2.2-6.7s.7-5,2.2-6.7c1.5-1.6,3.6-2.5,6.1-2.5s4.5.8,6,2.5c.2.2.4.5.6.8h8.5c-.3-.8-.7-1.6-1.1-2.4-1.4-2.4-3.3-4.4-5.8-5.7-2.4-1.4-5.2-2.1-8.1-2.1h0Z"/>
+    <path id="path16" class="st0" d="M106.9,46.1l1.7,15.6-3.9-7.2-10.9,10.6h-3.5l9.8-12.2-8.5-.7,15.3-6h0Z"/>
+  </g>
+</svg>
