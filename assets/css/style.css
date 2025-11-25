@@ -182,6 +182,38 @@ footer {
   transition: width 0.4s ease-in-out;
 }
 
+.quiz-stepper {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.quiz-stepper .step-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #d83f87;
+  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.quiz-stepper .step-dot.active {
+  background: #d83f87;
+  border-color: #d83f87;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 4px rgba(216, 63, 135, 0.15);
+}
+
+.quiz-stepper .step-dot.completed {
+  background: linear-gradient(90deg, #d83f87, #44318d);
+  border-color: transparent;
+}
+
+.question-card .validation-message {
+  min-height: 1.5rem;
+}
+
 .bird-container.bird-large {
   width: 120px;
   height: 120px;
@@ -533,4 +565,18 @@ body.page-result .navbar {
 .navbar,
 .offcanvas {
   z-index: 13000 !important;
+}
+
+/* Admin: pytania */
+.admin-questions .table td,
+.admin-questions .table th {
+  vertical-align: top;
+}
+
+.admin-questions .cell-edit textarea {
+  min-height: 64px;
+}
+
+.admin-questions .inline-actions {
+  flex-wrap: wrap;
 }

@@ -1,22 +1,24 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../session.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../includes/Auth.php';
 
+$auth = new Auth($conn);
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $login = $_POST['username'];
-    $haslo = $_POST['password'];
+    $login = trim((string) filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS));
+    $haslo = (string) filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
-    $stmt->bind_param("s", $login);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    if ($auth->login($login, $haslo)) {
+        $user = $auth->currentUser();
+        if ($user && $user['role'] === 'admin') {
+            header('Location: index.php?page=allresults');
+            exit;
+        }
 
     if ($user && password_verify($haslo, $user['password_hash']) && $user['role'] === 'admin') {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $user['username'];
         header('Location: index.php?page=allresults');

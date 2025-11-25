@@ -2,161 +2,122 @@
 
 class QuizRepository
 {
-    private \PDO $pdo;
+    private $conn;
 
-    public function __construct(\PDO $pdo)
+    public function __construct(mysqli $conn)
     {
-        $this->pdo = $pdo;
+        $this->conn = $conn;
     }
 
-    public function getActiveQuiz(): ?array
+    public function getQuizzes(): array
     {
-        $stmt = $this->pdo->query('SELECT * FROM quizzes WHERE is_active = 1 ORDER BY created_at DESC LIMIT 1');
-        $quiz = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $this->conn->query("SELECT * FROM quizzes ORDER BY created_at DESC");
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function getQuiz(int $id): ?array
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM quizzes WHERE id = ? LIMIT 1");
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $quiz = $result->fetch_assoc();
+        $stmt->close();
 
         return $quiz ?: null;
     }
 
-    public function getQuestionsWithAnswers(int $quizId): array
+    public function createQuiz(string $title, ?string $description): int
     {
-        $stmt = $this->pdo->prepare(
-            'SELECT q.id AS question_id, q.content AS question_content, q.position AS question_position, '
-            . 'a.label, a.content AS answer_content, a.position AS answer_position '
-            . 'FROM questions q '
-            . 'JOIN answers a ON a.question_id = q.id '
-            . 'WHERE q.quiz_id = :quizId '
-            . 'ORDER BY q.position ASC, a.position ASC'
-        );
-        $stmt->execute(['quizId' => $quizId]);
+        $stmt = $this->conn->prepare("INSERT INTO quizzes (title, description) VALUES (?, ?)");
+        $stmt->bind_param('ss', $title, $description);
+        $stmt->execute();
+        $id = $stmt->insert_id;
+        $stmt->close();
 
-        $grouped = [];
-        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
-            $questionId = (int) $row['question_id'];
-            if (!isset($grouped[$questionId])) {
-                $grouped[$questionId] = [
-                    'id' => $questionId,
-                    'content' => $row['question_content'],
-                    'answers' => [],
-                    'position' => (int) $row['question_position'],
-                ];
-            }
-
-            $grouped[$questionId]['answers'][$row['label']] = $row['answer_content'];
-        }
-
-        usort($grouped, fn($a, $b) => $a['position'] <=> $b['position']);
-
-        return array_values($grouped);
+        return $id;
     }
 
-    public function createQuestion(int $quizId, string $content, array $answers, ?int $position = null): int
+    public function updateQuiz(int $id, string $title, ?string $description): void
     {
-        $this->pdo->beginTransaction();
-
-        try {
-            if ($position === null) {
-                $stmt = $this->pdo->prepare('SELECT COALESCE(MAX(position), 0) + 1 FROM questions WHERE quiz_id = :quizId');
-                $stmt->execute(['quizId' => $quizId]);
-                $position = (int) $stmt->fetchColumn();
-            }
-
-            $questionStmt = $this->pdo->prepare(
-                'INSERT INTO questions (quiz_id, content, position) VALUES (:quizId, :content, :position)'
-            );
-            $questionStmt->execute([
-                'quizId' => $quizId,
-                'content' => $content,
-                'position' => $position,
-            ]);
-
-            $questionId = (int) $this->pdo->lastInsertId();
-
-            $answerStmt = $this->pdo->prepare(
-                'INSERT INTO answers (question_id, label, content, position) VALUES (:questionId, :label, :content, :position)'
-            );
-
-            $order = 1;
-            foreach ($answers as $label => $answerContent) {
-                $answerStmt->execute([
-                    'questionId' => $questionId,
-                    'label' => $label,
-                    'content' => $answerContent,
-                    'position' => $order++,
-                ]);
-            }
-
-            $this->pdo->commit();
-
-            return $questionId;
-        } catch (\Throwable $e) {
-            $this->pdo->rollBack();
-            throw $e;
-        }
+        $stmt = $this->conn->prepare("UPDATE quizzes SET title = ?, description = ? WHERE id = ?");
+        $stmt->bind_param('ssi', $title, $description, $id);
+        $stmt->execute();
+        $stmt->close();
     }
 
-    public function updateQuestion(int $questionId, string $content, array $answers, ?int $position = null): void
+    public function getQuestions(int $quizId): array
     {
-        $this->pdo->beginTransaction();
+        $stmt = $this->conn->prepare("SELECT * FROM quiz_questions WHERE quiz_id = ? ORDER BY sort_order ASC, id ASC");
+        $stmt->bind_param('i', $quizId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $questions = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
 
-        try {
-            $updateQuestionSql = 'UPDATE questions SET content = :content';
-            $params = [
-                'content' => $content,
-                'questionId' => $questionId,
-            ];
-
-            if ($position !== null) {
-                $updateQuestionSql .= ', position = :position';
-                $params['position'] = $position;
-            }
-
-            $updateQuestionSql .= ' WHERE id = :questionId';
-
-            $questionStmt = $this->pdo->prepare($updateQuestionSql);
-            $questionStmt->execute($params);
-
-            $this->pdo->prepare('DELETE FROM answers WHERE question_id = :questionId')->execute([
-                'questionId' => $questionId,
-            ]);
-
-            $answerStmt = $this->pdo->prepare(
-                'INSERT INTO answers (question_id, label, content, position) VALUES (:questionId, :label, :content, :position)'
-            );
-
-            $order = 1;
-            foreach ($answers as $label => $answerContent) {
-                $answerStmt->execute([
-                    'questionId' => $questionId,
-                    'label' => $label,
-                    'content' => $answerContent,
-                    'position' => $order++,
-                ]);
-            }
-
-            $this->pdo->commit();
-        } catch (\Throwable $e) {
-            $this->pdo->rollBack();
-            throw $e;
-        }
+        return $questions;
     }
 
-    public function deleteQuestion(int $questionId): void
+    public function getQuestion(int $id): ?array
     {
-        $this->pdo->beginTransaction();
+        $stmt = $this->conn->prepare("SELECT * FROM quiz_questions WHERE id = ? LIMIT 1");
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $question = $result->fetch_assoc();
+        $stmt->close();
 
-        try {
-            $this->pdo->prepare('DELETE FROM answers WHERE question_id = :questionId')->execute([
-                'questionId' => $questionId,
-            ]);
+        return $question ?: null;
+    }
 
-            $this->pdo->prepare('DELETE FROM questions WHERE id = :questionId')->execute([
-                'questionId' => $questionId,
-            ]);
+    public function createQuestion(int $quizId, string $text, string $type, int $order): int
+    {
+        $stmt = $this->conn->prepare("INSERT INTO quiz_questions (quiz_id, text, type, sort_order) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('issi', $quizId, $text, $type, $order);
+        $stmt->execute();
+        $id = $stmt->insert_id;
+        $stmt->close();
 
-            $this->pdo->commit();
-        } catch (\Throwable $e) {
-            $this->pdo->rollBack();
-            throw $e;
-        }
+        return $id;
+    }
+
+    public function updateQuestion(int $id, string $text, string $type, int $order): void
+    {
+        $stmt = $this->conn->prepare("UPDATE quiz_questions SET text = ?, type = ?, sort_order = ? WHERE id = ?");
+        $stmt->bind_param('ssii', $text, $type, $order, $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function getAnswers(int $questionId): array
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM quiz_answers WHERE question_id = ? ORDER BY id ASC");
+        $stmt->bind_param('i', $questionId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $answers = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $answers;
+    }
+
+    public function createAnswer(int $questionId, string $content, int $weight): int
+    {
+        $stmt = $this->conn->prepare("INSERT INTO quiz_answers (question_id, content, weight) VALUES (?, ?, ?)");
+        $stmt->bind_param('isi', $questionId, $content, $weight);
+        $stmt->execute();
+        $id = $stmt->insert_id;
+        $stmt->close();
+
+        return $id;
+    }
+
+    public function updateAnswer(int $id, string $content, int $weight): void
+    {
+        $stmt = $this->conn->prepare("UPDATE quiz_answers SET content = ?, weight = ? WHERE id = ?");
+        $stmt->bind_param('sii', $content, $weight, $id);
+        $stmt->execute();
+        $stmt->close();
     }
 }
+

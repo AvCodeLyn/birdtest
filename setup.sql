@@ -13,7 +13,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'user') DEFAULT 'admin',
+    role ENUM('admin', 'user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,33 +23,36 @@ CREATE TABLE settings (
     value TEXT
 );
 
-CREATE TABLE quizzes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    is_active TINYINT(1) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE questions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    quiz_id INT NOT NULL,
-    content TEXT NOT NULL,
-    position INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
-);
-
-CREATE TABLE answers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    question_id INT NOT NULL,
-    label CHAR(1) NOT NULL,
-    content TEXT NOT NULL,
-    position INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
-);
-
-INSERT INTO settings (name, value) VALUES ('quiz_password_hash', '<?= password_hash("tajnehaslo", PASSWORD_DEFAULT) ?>');
+INSERT INTO settings (name, value) VALUES ('quiz_password_hash', '$2y$12$aJY6SteSVsM1vn/GqRvxGu06OlmJoc8m9Gjmz0C1/zaFmJmlO8cu6');
 
 INSERT INTO users (username, password_hash, role)
 VALUES ('in2grow', '$2y$10$DUMMYHASHPLACEHOLDERFORREPLACEMENT', 'admin');
+
+CREATE TABLE quizzes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE quiz_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id INT NOT NULL,
+    text TEXT NOT NULL,
+    type ENUM('single_choice', 'multiple_choice', 'text') DEFAULT 'single_choice',
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_quiz_questions_quiz FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+
+CREATE TABLE quiz_answers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_id INT NOT NULL,
+    content TEXT NOT NULL,
+    weight INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_quiz_answers_question FOREIGN KEY (question_id) REFERENCES quiz_questions(id) ON DELETE CASCADE
+);
