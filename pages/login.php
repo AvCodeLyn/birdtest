@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../session.php';
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/Auth.php';
 
@@ -6,8 +7,8 @@ $auth = new Auth($conn);
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $login = trim($_POST['username'] ?? '');
-    $haslo = $_POST['password'] ?? '';
+    $login = trim((string) filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS));
+    $haslo = (string) filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
     if ($auth->login($login, $haslo)) {
         $user = $auth->currentUser();
@@ -16,8 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $auth->logout();
-        $error = "Twoje konto nie ma uprawnień administratora.";
+    if ($user && password_verify($haslo, $user['password_hash']) && $user['role'] === 'admin') {
+        session_regenerate_id(true);
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_username'] = $user['username'];
+        header('Location: index.php?page=allresults');
+        exit;
     } else {
         $error = "Nieprawidłowy login lub hasło.";
     }

@@ -34,36 +34,35 @@
   handlePasswordChange('changePasswordBtnMobile');
 </script>
 <script>
-  // Quiz progress (jeśli dotyczy quizu)
+  // Quiz progress synchronizacja hero
   document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.href.includes('page=quiz')) {
-      const title = document.getElementById('heroTitle');
+    if (document.body.classList.contains('page-quiz')) {
+      const heroTitle = document.getElementById('heroTitle');
+      const heroProgressLabel = document.getElementById('heroProgressLabel');
       const progressBar = document.getElementById('quizProgressBar');
-      const cards = document.querySelectorAll('.question-card');
-      const total = cards.length;
 
-      if (!title || !progressBar || total === 0) return;
+      const applyProgress = (detail) => {
+        const { index, total } = detail;
+        const percent = total ? Math.round(((index + 1) / total) * 100) : 0;
 
-      const updateProgress = (index) => {
-        title.textContent = `Pytanie ${index + 1}`;
-        const percent = Math.round(((index + 1) / total) * 100);
-        progressBar.style.width = percent + '%';
+        if (heroTitle) {
+          heroTitle.textContent = `Pytanie ${index + 1} z ${total}`;
+        }
+        if (heroProgressLabel) {
+          heroProgressLabel.textContent = `Postęp: ${percent}%`;
+        }
+        if (progressBar) {
+          progressBar.style.width = percent + '%';
+        }
       };
 
-      cards.forEach((card, index) => {
-        const confirmBtn = card.querySelector('.confirm-btn');
-        confirmBtn?.addEventListener('click', () => {
-          setTimeout(() => {
-            const nextCard = document.querySelector('.question-card.active');
-            if (nextCard) {
-              const nextIndex = parseInt(nextCard.dataset.index);
-              updateProgress(nextIndex);
-            }
-          }, 400);
-        });
+      window.addEventListener('quiz-progress-change', (event) => {
+        applyProgress(event.detail);
       });
 
-      updateProgress(0);
+      if (window.latestQuizProgress) {
+        applyProgress(window.latestQuizProgress);
+      }
     }
   });
 </script>

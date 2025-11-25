@@ -26,4 +26,33 @@ CREATE TABLE settings (
 INSERT INTO settings (name, value) VALUES ('quiz_password_hash', '$2y$12$aJY6SteSVsM1vn/GqRvxGu06OlmJoc8m9Gjmz0C1/zaFmJmlO8cu6');
 
 INSERT INTO users (username, password_hash, role)
-VALUES ('in2grow', '$2y$12$e1w81lYifZEOeUXTtVgtzuCqMj/1.cMPyLVOc20rng/.hRTejifGG', 'admin');
+VALUES ('in2grow', '$2y$10$DUMMYHASHPLACEHOLDERFORREPLACEMENT', 'admin');
+
+CREATE TABLE quizzes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE quiz_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id INT NOT NULL,
+    text TEXT NOT NULL,
+    type ENUM('single_choice', 'multiple_choice', 'text') DEFAULT 'single_choice',
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_quiz_questions_quiz FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+
+CREATE TABLE quiz_answers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_id INT NOT NULL,
+    content TEXT NOT NULL,
+    weight INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_quiz_answers_question FOREIGN KEY (question_id) REFERENCES quiz_questions(id) ON DELETE CASCADE
+);
