@@ -3,9 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../session.php';
 
 if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header("Location: index.php?page=login");
@@ -13,29 +11,6 @@ if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true
 }
 
 require_once __DIR__ . '/../db.php';
-
-// Obsługa zmiany hasła
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_quiz_password'])) {
-    $newPassword = $_POST['new_password'];
-    $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-
-    $stmt = $conn->prepare("UPDATE settings SET value = ? WHERE name = 'quiz_password_hash'");
-    $stmt->bind_param("s", $hash);
-    $stmt->execute();
-    $stmt->close();
-
-    $_SESSION['flash'] = "Hasło do testu zostało zmienione.";
-    header("Location: index.php?page=allresults");
-    exit;
-}
-
-// Obsługa czyszczenia danych
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_all'])) {
-    $conn->query("DELETE FROM quiz_results");
-    $_SESSION['flash'] = "Wszystkie odpowiedzi zostały usunięte.";
-    header("Location: index.php?page=allresults");
-    exit;
-}
 
 // Pobierz dane do macierzy
 $result = $conn->query("SELECT * FROM quiz_results ORDER BY created_at DESC");
@@ -143,9 +118,10 @@ $conn->close();
 </section>
 
 <!-- Ukryty formularz do zmiany hasła -->
-<form id="changePasswordForm" method="post" action="index.php?page=allresults" style="display:none;">
+<form id="changePasswordForm" method="post" action="/actions.php" style="display:none;">
   <input type="hidden" name="new_password" id="hiddenNewPassword">
   <input type="hidden" name="change_quiz_password" value="1">
+  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 </form>
 
 

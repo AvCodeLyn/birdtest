@@ -205,8 +205,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <form method="post" action="index.php?page=allresults" onsubmit="return confirm('Czy na pewno chcesz wyczyścić wszystkie wyniki?');" class="d-inline">
+            <form method="post" action="/actions.php" onsubmit="return confirm('Czy na pewno chcesz wyczyścić wszystkie wyniki?');" class="d-inline">
               <input type="hidden" name="clear_all" value="1">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
               <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 custom-hover">
                 Wyczyść wszystko
               </button>
@@ -235,8 +236,9 @@
               </a>
             </li>
             <li class="nav-item w-100">
-              <form method="post" action="index.php?page=allresults" onsubmit="return confirm('Czy na pewno chcesz wyczyścić wszystkie wyniki?');" class="w-100">
+              <form method="post" action="/actions.php" onsubmit="return confirm('Czy na pewno chcesz wyczyścić wszystkie wyniki?');" class="w-100">
                 <input type="hidden" name="clear_all" value="1">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 custom-hover w-100">
                   Wyczyść wszystko
                 </button>
