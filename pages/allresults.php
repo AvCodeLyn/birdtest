@@ -11,6 +11,10 @@ if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true
 }
 
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../includes/Auth.php';
+
+$auth = new Auth($conn);
+$auth->requireRole('admin');
 
 // Pobierz dane do macierzy
 $result = $conn->query("SELECT * FROM quiz_results ORDER BY created_at DESC");
