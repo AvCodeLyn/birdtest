@@ -27,3 +27,12 @@ INSERT INTO settings (name, value) VALUES ('quiz_password_hash', '<?= password_h
 
 INSERT INTO users (username, password_hash, role)
 VALUES ('in2grow', '$2y$10$DUMMYHASHPLACEHOLDERFORREPLACEMENT', 'admin');
+
+CREATE TABLE IF NOT EXISTS quiz_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_order INT NOT NULL,
+    options_json LONGTEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_question_order (question_order)
+);

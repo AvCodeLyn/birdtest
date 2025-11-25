@@ -136,6 +136,7 @@
         </div>
       </div>
       <p class="lead" id="heroSubtitle">Wybierz zestaw, który najlepiej Cię opisuje</p>
+      <p class="small text-white-50 mb-0" id="heroProgressLabel"></p>
     </div>
   </div>
 <?php elseif ($page === 'result'): ?>
@@ -200,6 +201,11 @@
       <div class="collapse navbar-collapse justify-content-end d-none d-lg-flex" id="navbarNav">
         <ul class="navbar-nav d-flex align-items-center gap-2">
           <li class="nav-item">
+            <a href="index.php?page=questions" class="btn btn-outline-light rounded-pill px-4 py-2 custom-hover">
+              Bank pytań
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="#" id="changePasswordBtn" class="btn btn-outline-light rounded-pill px-4 py-2 custom-hover">
               Zmień hasło do testu
             </a>
@@ -229,6 +235,11 @@
         </div>
         <div class="offcanvas-body">
           <ul class="navbar-nav d-flex flex-column align-items-start gap-2">
+            <li class="nav-item w-100">
+              <a href="index.php?page=questions" class="btn btn-outline-light rounded-pill px-4 py-2 custom-hover w-100 mb-2">
+                Bank pytań
+              </a>
+            </li>
             <li class="nav-item w-100">
               <a href="#" id="changePasswordBtnMobile" class="btn btn-outline-light rounded-pill px-4 py-2 custom-hover w-100 mb-2">
                 Zmień hasło do testu
