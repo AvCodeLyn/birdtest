@@ -4,7 +4,19 @@ session_start();
 $page = isset($_GET['page']) ? $_GET['page'] : null;
 
 // Lista dozwolonych podstron
-$allowed = ['home', 'quiz', 'result', 'allresults', 'login', 'logout'];
+$allowed = [
+    'home',
+    'quiz',
+    'result',
+    'allresults',
+    'login',
+    'logout',
+    'admin/dashboard',
+    'admin/quizzes',
+    'admin/questions',
+    'admin/answers',
+    'admin/actions'
+];
 
 include 'includes/header.php';
 
