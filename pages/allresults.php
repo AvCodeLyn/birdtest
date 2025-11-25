@@ -3,16 +3,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: index.php?page=login");
-    exit;
-}
-
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../includes/Auth.php';
+
+$auth = new Auth($conn);
+$auth->requireRole('admin');
 
 // Obsługa zmiany hasła
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_quiz_password'])) {
