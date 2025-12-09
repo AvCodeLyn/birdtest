@@ -7,14 +7,35 @@ include 'db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $map = ['D' => 'orzel', 'I' => 'papuga', 'S' => 'golab', 'C' => 'sowa'];
     $count = ['orzel' => 0, 'papuga' => 0, 'golab' => 0, 'sowa' => 0];
+    $reachStep = [
+        'orzel' => [],
+        'papuga' => [],
+        'golab' => [],
+        'sowa' => []
+    ];
 
-    foreach ($_POST as $val) {
+    $answers = $_POST;
+    uksort($answers, fn($a, $b) => strnatcmp($a, $b));
+
+    $step = 0;
+    foreach ($answers as $val) {
+        $step++;
         $ptak = $map[$val];
         $count[$ptak]++;
+
+        $currentCount = $count[$ptak];
+        if (!isset($reachStep[$ptak][$currentCount])) {
+            $reachStep[$ptak][$currentCount] = $step;
+        }
     }
 
     $max = max($count);
-    $dominant = array_keys($count, $max);
+    $dominantCandidates = array_keys($count, $max);
+    usort($dominantCandidates, function ($a, $b) use ($reachStep, $max) {
+        return $reachStep[$a][$max] <=> $reachStep[$b][$max];
+    });
+
+    $dominant = array_slice($dominantCandidates, 0, 2);
 
     $birdLabels = [
         'orzel' => 'Orzeł',

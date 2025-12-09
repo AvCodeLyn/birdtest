@@ -1,12 +1,35 @@
 <?php
 $map = ['D' => 'orzel', 'I' => 'papuga', 'S' => 'golab', 'C' => 'sowa'];
 $count = ['orzel' => 0, 'papuga' => 0, 'golab' => 0, 'sowa' => 0];
-foreach ($_POST as $val) {
+$reachStep = [
+    'orzel' => [],
+    'papuga' => [],
+    'golab' => [],
+    'sowa' => []
+];
+
+$answers = $_POST;
+uksort($answers, fn($a, $b) => strnatcmp($a, $b));
+
+$step = 0;
+foreach ($answers as $val) {
+    $step++;
     $ptak = $map[$val];
     $count[$ptak]++;
+
+    $currentCount = $count[$ptak];
+    if (!isset($reachStep[$ptak][$currentCount])) {
+        $reachStep[$ptak][$currentCount] = $step;
+    }
 }
+
 $max = max($count);
-$dominant = array_keys($count, $max);
+$dominantCandidates = array_keys($count, $max);
+usort($dominantCandidates, function ($a, $b) use ($reachStep, $max) {
+    return $reachStep[$a][$max] <=> $reachStep[$b][$max];
+});
+
+$dominant = array_slice($dominantCandidates, 0, 2);
 $dominant_text = implode(', ', array_map('ucfirst', $dominant));
 
 $ip = $_SERVER['REMOTE_ADDR'];
